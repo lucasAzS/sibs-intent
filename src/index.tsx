@@ -20,3 +20,6 @@ const SibsIntent = NativeModules.SibsIntent
 export function multiply(a: number, b: number): Promise<number> {
   return SibsIntent.multiply(a, b);
 }
+export function openIntent(packageId: String): Promise<void> {
+  return SibsIntent.openIntent(packageId, Promise);
+}
