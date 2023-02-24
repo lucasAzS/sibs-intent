@@ -22,4 +22,17 @@ class SibsIntentModule(reactContext: ReactApplicationContext) :
   companion object {
     const val NAME = "SibsIntent"
   }
+  @ReactMethod
+  fun openIntent(packageId: String, promise: Promise) {
+    val packageManager: PackageManager = reactApplicationContext.packageManager
+    try {
+      val launchIntent: Intent? = packageManager.getLaunchIntentForPackage(packageId)
+       // val launchIntent: Intent? = packageManager.getLaunchIntentForPackage("com.google.android.youtube")
+      reactApplicationContext.startActivity(launchIntent)
+      promise.resolve(true)
+    } catch (e: Exception) {
+      promise.reject(e.message, "Package not found")
+    }
+  }
+
 }
