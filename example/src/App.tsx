@@ -8,7 +8,9 @@ export default function App() {
 
   React.useEffect(() => {
     multiply(3, 7).then(setResult);
-    openIntent('com.google.android.youtube');
+    openIntent('com.google.android.youtube')
+      .then((value) => console.log(value))
+      .catch((err) => console.log(err));
   }, []);
 
   return (

@@ -17,9 +17,17 @@ const SibsIntent = NativeModules.SibsIntent
       }
     );
 
-export function multiply(a: number, b: number): Promise<number> {
+export async function multiply(a: number, b: number): Promise<number> {
   return SibsIntent.multiply(a, b);
 }
-export function openIntent(packageId: String): Promise<void> {
-  return SibsIntent.openIntent(packageId, Promise);
+export async function openIntent(packageId: string): Promise<void> {
+  if (!packageId || typeof packageId !== 'string')
+    throw new Error('Invalid package id');
+
+  try {
+    await SibsIntent.openIntent(packageId);
+  } catch (_e) {
+    const e = _e as string;
+    throw new Error(e);
+  }
 }

@@ -22,4 +22,9 @@
         </intent-filter>
       </activity>
     </application>
+
+    <queries>
+      <package android:name="com.google.android.youtube" />
+      <package android:name="com.example.app" />
+  </queries>
 </manifest>
