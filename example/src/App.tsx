@@ -1,21 +1,19 @@
 import * as React from 'react';
 
-import { StyleSheet, Text, View } from 'react-native';
-import { multiply, openIntent } from 'react-native-sibs-intent';
+import { Alert, Button, StyleSheet, View } from 'react-native';
+import { openIntent } from 'react-native-sibs-intent';
 
 export default function App() {
-  const [result, setResult] = React.useState<number | undefined>();
-
-  React.useEffect(() => {
-    multiply(3, 7).then(setResult);
-    openIntent('com.google.android.youtube')
-      .then((value) => console.log(value))
-      .catch((err) => console.log(err));
-  }, []);
-
   return (
     <View style={styles.container}>
-      <Text>Result: {result}</Text>
+      <Button
+        title="Open App"
+        onPress={() =>
+          openIntent('pt.sibs.android.mpos.sibsPagamentosQly')
+            .then((value) => console.log(value))
+            .catch((err) => Alert.alert(`${err}`))
+        }
+      />
     </View>
   );
 }
