@@ -26,5 +26,6 @@
   <queries>
     <package android:name="com.google.android.youtube" />
     <package android:name="pt.sibs.android.mpos.sibsPagamentosQly" />
+    <package android:name="pt.sibs.android.mpos.sibsPagamentosQly.MainActivity" />
   </queries>
 </manifest>
