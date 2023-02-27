@@ -69,18 +69,17 @@ class SibsIntentModule(reactContext: ReactApplicationContext) :
       val base64msg = Base64.encodeToString(bytes, Base64.DEFAULT)
 
 
-        // Package of the application that is calling mPOS
-       launchIntent?.putExtra(PACKAGE_ID, "com.sibsintent")
-        // Flag to tell mPOS if this app requires a response
-      launchIntent?.putExtra(REQUEST_RESPONSE, true)
-        // Message with amount and reference
-      launchIntent?.putExtra(BASE64REFERENCE, base64msg)
-        // Activity request code
-      launchIntent?.putExtra(REQUEST_KEY, activityRequestCode)
-      // val launchIntent: Intent? = packageManager.getLaunchIntentForPackage("com.google.android.youtube")
-      Log.d("launchIntent: $launchIntent", "launchIntent: $launchIntent")
+      val data =  Bundle();
+      data.putString(PACKAGE_ID, "com.sibsintentexample");
+      data.putBoolean(REQUEST_RESPONSE, true);
+      data.putString(BASE64REFERENCE,base64msg);
+      data.putInt(REQUEST_KEY, activityRequestCode);
+      // launchIntent?.flags = Intent.FLAG_ACTIVITY_SINGLE_TOP;
+      launchIntent?.putExtra(DATA_MPOS, data);
 
-       reactApplicationContext.startActivity(launchIntent)
+      Log.d("data", data.toString());
+
+      reactApplicationContext.startActivity(launchIntent)
 
 
       promise.resolve(true)

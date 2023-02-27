@@ -1,6 +1,6 @@
 import * as React from 'react';
 
-import { Alert, Button, StyleSheet, View } from 'react-native';
+import { Button, StyleSheet, View } from 'react-native';
 import { openIntent } from 'react-native-sibs-intent';
 
 export default function App() {
@@ -11,7 +11,7 @@ export default function App() {
         onPress={() =>
           openIntent('pt.sibs.android.mpos.sibsPagamentosQly', '1', 'abc')
             .then((value) => console.log(value))
-            .catch((err) => Alert.alert(`${err}`))
+            .catch((err) => console.log('err', err))
         }
       />
     </View>
