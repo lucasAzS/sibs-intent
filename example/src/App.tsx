@@ -1,6 +1,6 @@
 import * as React from 'react';
 
-import { Button, StyleSheet, View } from 'react-native';
+import { Alert, Button, StyleSheet, View } from 'react-native';
 import { openIntent } from 'react-native-sibs-intent';
 
 export default function App() {
@@ -9,9 +9,9 @@ export default function App() {
       <Button
         title="Open App"
         onPress={() =>
-          openIntent('pt.sibs.android.mpos.sibsPagamentosQly', '1', 'abc')
+          openIntent('abc', '1', 'pt.sibs.android.mpos.sibsPagamentosQly')
             .then((value) => console.log(value))
-            .catch((err) => console.log('err', err))
+            .catch((err) => Alert.alert(`${err}`))
         }
       />
     </View>

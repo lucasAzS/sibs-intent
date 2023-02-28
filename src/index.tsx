@@ -21,33 +21,19 @@ export async function multiply(a: number, b: number): Promise<number> {
   return SibsIntent.multiply(a, b);
 }
 export async function openIntent(
-  packageId: string,
+  reference: string,
   amount: string,
-  reference: string
+  packageId: string
 ): Promise<void> {
   if (!packageId || typeof packageId !== 'string')
     throw new Error('Invalid package id');
 
   try {
-    await SibsIntent.openIntent(packageId, amount, reference);
+    await SibsIntent.openIntent(reference, amount, packageId);
   } catch (_e) {
     const e = _e as string;
     throw new Error(e);
   }
 }
 
-export async function createPendingIntent(
-  packageId: string,
-  amount: string,
-  reference: string
-): Promise<void> {
-  if (!packageId || typeof packageId !== 'string')
-    throw new Error('Invalid package id');
-
-  try {
-    return SibsIntent.createPendingIntent(reference, amount);
-  } catch (_e) {
-    const e = _e as string;
-    throw new Error(e);
-  }
-}
+SibsIntent.onNewIntent();

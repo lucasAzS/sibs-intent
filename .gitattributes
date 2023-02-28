@@ -1,3 +1,4 @@
 *.pbxproj -text
+* text=auto
 # specific for windows script files
 *.bat text eol=crlf

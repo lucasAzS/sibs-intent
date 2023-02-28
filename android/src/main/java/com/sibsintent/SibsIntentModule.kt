@@ -1,22 +1,22 @@
 package com.sibsintent
 
-import android.app.TaskStackBuilder
-import android.content.ComponentName
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Bundle
 import android.util.Base64
-import android.widget.Toast
-import android.content.Context
-import android.os.Parcel
-import android.os.Parcelable
 import android.util.Log
+import android.widget.Toast
 import com.facebook.react.bridge.Promise
 import com.facebook.react.bridge.ReactApplicationContext
 import com.facebook.react.bridge.ReactContextBaseJavaModule
 import com.facebook.react.bridge.ReactMethod
 import com.google.gson.GsonBuilder
 import com.sibsintent.Constants.BASE64REFERENCE
+import com.sibsintent.Constants.CALLIN_AMOUNT_KEY
+import com.sibsintent.Constants.CALLIN_DATE_KEY
+import com.sibsintent.Constants.CALLIN_ERROR_KEY
+import com.sibsintent.Constants.CALLIN_REF
+import com.sibsintent.Constants.CALLIN_STATUS_KEY
 import com.sibsintent.Constants.DATA_MPOS
 import com.sibsintent.Constants.PACKAGE_ID
 import com.sibsintent.Constants.REQUEST_KEY
@@ -26,15 +26,33 @@ import com.sibsintent.Constants.REQUEST_RESPONSE
 class SibsIntentModule(reactContext: ReactApplicationContext) :
   ReactContextBaseJavaModule(reactContext) {
 
+  private val activityRequestCode: Int = 100
+
+
+  override fun onCreate(savedInstanceState: Bundle) {
+    super.onCreate(savedInstanceState)
+    val intent = reactApplicationContext.currentActivity?.intent
+    when (intent?.action) {
+      Intent.ACTION_SEND -> {
+        if ("text/plain" == intent.type) {
+          handleSendText(intent) // Handle text being sent
+        }
+
+      }
+    }
+  }
+
+  private fun handleSendText(intent: Intent) {
+    intent.getStringExtra(Intent.EXTRA_TEXT)?.let {
+      Toast.makeText(reactApplicationContext, it, Toast.LENGTH_LONG).show()
+    }
+  }
 
   companion object {
     const val NAME = "SibsIntent"
-
-
   }
 
 
-  private val activityRequestCode: Int = 100
 //  private val sw: SwitchCompat? = null
 
 
@@ -50,17 +68,20 @@ class SibsIntentModule(reactContext: ReactApplicationContext) :
   }
 
   @ReactMethod
-  fun openIntent(packageId: String, value: String, reference: String, promise: Promise) {
+  fun openIntent(reference: String, value: String, packageId: String, promise: Promise) {
     val packageManager: PackageManager = reactApplicationContext.packageManager
 
     try {
       val launchIntent: Intent? = packageManager.getLaunchIntentForPackage(packageId)
 
       val messageToSend = MessageToSend()
-      messageToSend.setReference(reference)
-
       val amount = value.replace("[^\\d.]".toRegex(), "")
       messageToSend.setAmount(amount)
+      messageToSend.setReference(reference)
+
+      Log.d("amount", amount)
+      Log.d("reference", reference)
+
 
       val gson = GsonBuilder().create()
       val message = gson.toJson(messageToSend, MessageToSend::class.java)
@@ -69,79 +90,67 @@ class SibsIntentModule(reactContext: ReactApplicationContext) :
       val base64msg = Base64.encodeToString(bytes, Base64.DEFAULT)
 
 
-      val data =  Bundle();
-      data.putString(PACKAGE_ID, "com.sibsintentexample");
-      data.putBoolean(REQUEST_RESPONSE, true);
-      data.putString(BASE64REFERENCE,base64msg);
-      data.putInt(REQUEST_KEY, activityRequestCode);
-      // launchIntent?.flags = Intent.FLAG_ACTIVITY_SINGLE_TOP;
-      launchIntent?.putExtra(DATA_MPOS, data);
+      val data = Bundle()
+      data.putString(PACKAGE_ID, "com.sibsintent")
+      data.putBoolean(REQUEST_RESPONSE, true)
+      data.putString(BASE64REFERENCE, base64msg)
+      data.putInt(REQUEST_KEY, activityRequestCode)
+//      launchIntent!!.flags = FLAG_ACTIVITY_SINGLE_TOP
+      launchIntent!!.putExtra(DATA_MPOS, data)
 
-      Log.d("data", data.toString());
+      Log.d("data", data.toString())
 
       reactApplicationContext.startActivity(launchIntent)
-
 
       promise.resolve(true)
     } catch (e: Exception) {
       promise.reject(e.message, "Package not found")
     }
-  }}
+  }
 
-//  @ReactMethod
-//   fun createPendingIntent(reference: String, value: String) {
-//    val packageManager: PackageManager = reactApplicationContext.packageManager
-//    val launchIntent: Intent? = packageManager.getLaunchIntentForPackage(packageId)
-//
-//    // Package of Smartpos that will be called
-//
-//    val stackBuilder = TaskStackBuilder.create(reactApplicationContext)
-//    stackBuilder.addNextIntent(launchIntent)
-//    // create a json with value and reference
-//    val messageToSend = MessageToSend()
-//    // This is the value in cents, for example 1000 = 10.00€
-//    val amount = value.replace("[^\\d.]".toRegex(), "")
-//    messageToSend.setAmount(amount)
-//
-//    // This is the reference we will pass for mPOS (String up to 50 characters)
-//    messageToSend.setReference(reference)
-//
-//    // Convert the MessageToSend object to Json using Gson
-//    val gson = GsonBuilder().create()
-//    val message = gson.toJson(messageToSend, MessageToSend::class.java)
-//    // Convert json to a Base64
-//    val bytes = message.toByteArray(Charsets.UTF_8)
-//    val base64msg = Base64.encodeToString(bytes, Base64.DEFAULT)
-//    // Create a bundle and add it to Intent to call mpos and send data over
-//    val data = Bundle().apply {
-//      // Package of the application that is calling mPOS
-//      putString(PACKAGE_ID,"com.sibsintent")
-//      // Flag to tell mPOS if this app requires a response
-//      putBoolean(REQUEST_RESPONSE,false)
-//      putBoolean("CALL_IN_APP_FECHO", false)
-//      // Message with amount and reference
-//      putString(BASE64REFERENCE, base64msg)
-//      // Activity request code
-//      putInt(REQUEST_KEY, activityRequestCode)
-//    }
-//    launchIntent.flags = Intent.FLAG_ACTIVITY_SINGLE_TOP
-//    launchIntent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
-//    launchIntent.putExtra(DATA_MPOS, data)
-//    reactApplicationContext.startActivity(launchIntent)
-//  }
-//}
+  @ReactMethod
+  @Override
+  protected fun onNewIntent(promise: Promise) {
+    var status = ""
+    var errorCode = ""
+    var date = ""
+    var reference = ""
+    var amount = ""
+    // get response from mpos
+    try {
+      val intent = reactApplicationContext.currentActivity?.intent
+      if (intent?.extras != null) {
+        Log.d("intent", intent.extras.toString())
+        if (intent.extras?.containsKey(CALLIN_ERROR_KEY) == true)
+          errorCode = intent.extras!!.getString(CALLIN_ERROR_KEY).toString()
+        if (intent.extras!!.containsKey(CALLIN_STATUS_KEY))
+          status = intent.extras!!.getString(CALLIN_STATUS_KEY).toString()
+        if (intent.extras!!.containsKey(CALLIN_DATE_KEY))
+          date = intent.extras!!.getString(CALLIN_DATE_KEY).toString()
+        if (intent.extras!!.containsKey(CALLIN_AMOUNT_KEY))
+          amount = intent.extras!!.getString(CALLIN_AMOUNT_KEY).toString()
+        if (intent.extras!!.containsKey(CALLIN_REF))
+          reference = intent.extras!!.getString(CALLIN_REF).toString()
 
-//  private fun onNewIntent(intent: Intent?) {
-//    var status: String? = ""
-//    var errorCode: String? = ""
-//    // get response from mpos
-//    if (intent != null && intent.extras != null) {
-//      errorCode = intent.extras!!.getString(Constants.CALLIN_ERROR_KEY)
-//      status = intent.extras!!.getString(Constants.CALLIN_STATUS_KEY)
-//    }
-//    Toast.makeText(applicationContext, "STATUS1: $status Error $errorCode", Toast.LENGTH_SHORT)
-//      .show()
-//    onNewIntent(intent)
-//  }
-//
-//}
+        Toast.makeText(
+          reactApplicationContext,
+          "Status: $status, Error: $errorCode, Date: $date, Amount: $amount, Reference: $reference",
+          Toast.LENGTH_LONG,
+        ).show()
+
+        promise.resolve(true)
+
+      } else {
+        Toast.makeText(reactApplicationContext, "No data", Toast.LENGTH_LONG).show()
+      }
+    } catch (e: Exception) {
+      promise.reject(e.message, "Error")
+    }
+
+  }
+
+
+}
+
+
+
