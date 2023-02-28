@@ -36,4 +36,21 @@ export async function openIntent(
   }
 }
 
-SibsIntent.onNewIntent();
+export async function createPendingIntent(
+  reference: string,
+  amount: string,
+  packageId: string
+) {
+  if (!packageId || typeof packageId !== 'string') {
+    throw new Error('Invalid package id');
+  }
+
+  try {
+    await SibsIntent.createPendingIntent(reference, amount, packageId);
+  } catch (_e) {
+    const e = _e as string;
+    throw new Error(e);
+  }
+}
+
+// SibsIntent.onNewIntent();
