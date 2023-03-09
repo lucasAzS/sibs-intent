@@ -17,35 +17,14 @@ const SibsIntent = NativeModules.SibsIntent
       }
     );
 
-export async function multiply(a: number, b: number): Promise<number> {
-  return SibsIntent.multiply(a, b);
-}
 export async function openIntent(
   packageId: string,
-  amount: string,
+  ammount: string,
   reference: string
 ): Promise<void> {
-  if (!packageId || typeof packageId !== 'string')
-    throw new Error('Invalid package id');
-
+  if (!packageId) throw new Error('Invalid package id');
   try {
-    await SibsIntent.openIntent(packageId, amount, reference);
-  } catch (_e) {
-    const e = _e as string;
-    throw new Error(e);
-  }
-}
-
-export async function createPendingIntent(
-  packageId: string,
-  amount: string,
-  reference: string
-): Promise<void> {
-  if (!packageId || typeof packageId !== 'string')
-    throw new Error('Invalid package id');
-
-  try {
-    return SibsIntent.createPendingIntent(reference, amount);
+    await SibsIntent.openIntent(packageId, ammount, reference);
   } catch (_e) {
     const e = _e as string;
     throw new Error(e);

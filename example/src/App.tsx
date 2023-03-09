@@ -9,7 +9,11 @@ export default function App() {
       <Button
         title="Open App"
         onPress={() =>
-          openIntent('pt.sibs.android.mpos.sibsPagamentosQly', '1', 'abc')
+          openIntent(
+            '123456789',
+            '1000',
+            'pt.sibs.android.mpos.sibsPagamentosQly'
+          )
             .then((value) => console.log(value))
             .catch((err) => console.log('err', err))
         }

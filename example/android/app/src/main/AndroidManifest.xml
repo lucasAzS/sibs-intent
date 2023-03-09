@@ -27,7 +27,11 @@
     <package android:name="com.google.android.youtube" />
     <package android:name="pt.sibs.android.mpos.sibsPagamentosQly" />
     <package android:name="pt.sibs.android.mpos.sibsPagamentosQly.MainActivity" />
-     <package android:name="pt.sibs.android.mpos.sibsPagamentosQLY.NexGo" />
-    
+    <package android:name="pt.sibs.android.mpos.sibsPagamentosQLY.NexGo" />
+    <package android:name="pt.sibs.android.mbway.qly" />
+    <package android:name="pt.sibs.android.mpos.activities.MainActivity" />
+    <package android:name="pt.sibs.android.mpos.activities.SplashActivity" />
+
+
   </queries>
 </manifest>

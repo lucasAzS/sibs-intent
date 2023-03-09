@@ -6,14 +6,14 @@ class MessageToSend {
   @SerializedName("reference")
   private var reference: String? = null
 
-  @SerializedName("amount")
-  private var amount: String? = null
+  @SerializedName("ammount")
+  private var ammount: String? = null
 
   fun setReference(reference: String) {
     this.reference = reference
   }
 
-  fun setAmount(amount: String) {
-    this.amount = amount
+  fun setAmmount(ammount: String) {
+    this.ammount = ammount
   }
 }
