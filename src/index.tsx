@@ -1,4 +1,4 @@
-import { NativeModules, Platform } from 'react-native';
+import { NativeModules, Platform, Alert } from 'react-native';
 
 const LINKING_ERROR =
   `The package 'react-native-sibs-intent' doesn't seem to be linked. Make sure: \n\n` +
@@ -17,16 +17,28 @@ const SibsIntent = NativeModules.SibsIntent
       }
     );
 
+/**
+ * It opens the Sibs Intent with the given parameters
+ * @param {string} packageId - The package id of your app. You can find it in your AndroidManifest.xml
+ * file.
+ * @param {string} className - The name of the class that will be opened when the user clicks on the
+ * notification.
+ * @param {string} ammount - The amount of money you want to send. The price is in cents. 1000 = $10.00.
+ * @param {string} reference - The reference of the payment.
+ */
+
 export async function openIntent(
   packageId: string,
+  className: string,
   ammount: string,
   reference: string
 ): Promise<void> {
   if (!packageId) throw new Error('Invalid package id');
   try {
-    await SibsIntent.openIntent(packageId, ammount, reference);
+    await SibsIntent.openIntent(packageId, className, ammount, reference);
   } catch (_e) {
     const e = _e as string;
+    Alert.alert(e);
     throw new Error(e);
   }
 }
