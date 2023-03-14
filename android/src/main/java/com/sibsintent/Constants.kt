@@ -14,4 +14,7 @@ internal object Constants {
   const val REQUEST_KEY = "REQUEST_KEY"
   const val CALLIN_ERROR_KEY = "CALL_IN_ERROR" //key for response field : error
   const val CALLIN_STATUS_KEY = "CALL_IN_STATUS" //key for response field : status
+  const val CALLIN_DATE_KEY = "CALLIN_DATE_KEY"
+  const val CALLIN_AMOUNT_KEY = "CALLIN_AMOUNT_KEY"
+  const val CALLIN_REF = "CALLIN_REF"
 }
