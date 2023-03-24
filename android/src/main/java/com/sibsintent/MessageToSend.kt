@@ -2,6 +2,7 @@ package com.sibsintent
 
 import com.google.gson.annotations.SerializedName
 
+// these typos are needed, don't change them
 class MessageToSend {
   @SerializedName("reference")
   private var reference: String? = null

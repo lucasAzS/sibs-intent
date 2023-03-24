@@ -1,6 +1,7 @@
 import * as React from 'react';
 
 import {
+  DeviceEventEmitter,
   Keyboard,
   ScrollView,
   StyleSheet,
@@ -9,11 +10,24 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import { openIntent } from 'react-native-sibs-intent';
+import { Data, openIntent } from 'react-native-sibs-intent';
+
+const EVENT_NAME = 'onIntentResponse';
 
 export default function App() {
-  const [value, setValue] = React.useState('');
-  const [reference, setReference] = React.useState('');
+  const [value, setValue] = React.useState('1');
+  const [reference, setReference] = React.useState('asd');
+  const [result, setResult] = React.useState();
+
+  const handleData = async (data) => {
+    try {
+      setResult(data);
+    } catch (error) {
+      console.error('Error while getting JSON from native module:');
+    }
+  };
+
+  DeviceEventEmitter.addListener(EVENT_NAME, handleData);
 
   const sendIntent = async () => {
     await openIntent(
@@ -26,6 +40,10 @@ export default function App() {
     setValue('');
     setReference('');
   };
+
+  React.useEffect(() => {
+    console.log(result);
+  }, [result]);
 
   return (
     <ScrollView contentContainerStyle={styles.container}>

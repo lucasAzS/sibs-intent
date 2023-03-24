@@ -17,6 +17,11 @@ const SibsIntent = NativeModules.SibsIntent
       }
     );
 
+export interface Data {
+  status: string;
+  erroCode: string;
+}
+
 /**
  * It opens the Sibs Intent with the given parameters
  * @param {string} packageId - The package id of your app. You can find it in your AndroidManifest.xml
@@ -37,8 +42,7 @@ export async function openIntent(
   try {
     await SibsIntent.openIntent(packageId, className, ammount, reference);
   } catch (_e) {
-    const e = _e as string;
-    Alert.alert(e);
-    throw new Error(e);
+    const e = _e;
+    console.log(e);
   }
 }
