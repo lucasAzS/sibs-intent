@@ -17,9 +17,9 @@ const EVENT_NAME = 'onIntentResponse';
 export default function App() {
   const [value, setValue] = React.useState('1');
   const [reference, setReference] = React.useState('asd');
-  const [result, setResult] = React.useState();
+  const [result, setResult] = React.useState<Data>();
 
-  const handleData = async (data) => {
+  const handleData = async (data: Data) => {
     try {
       setResult(data);
     } catch (error) {
