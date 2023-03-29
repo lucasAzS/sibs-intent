@@ -32,7 +32,7 @@ export interface Data {
  * @param {string} reference - The reference of the payment.
  */
 
-export async function openIntent(
+export async function startActivityWithIntentMessage(
   packageId: string,
   className: string,
   ammount: string,
@@ -40,7 +40,12 @@ export async function openIntent(
 ): Promise<void> {
   if (!packageId) throw new Error('Invalid package id');
   try {
-    await SibsIntent.openIntent(packageId, className, ammount, reference);
+    await SibsIntent.startActivityWithIntentMessage(
+      packageId,
+      className,
+      ammount,
+      reference
+    );
   } catch (_e) {
     const e = _e;
     console.log(e);

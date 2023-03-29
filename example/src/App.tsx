@@ -10,7 +10,7 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import { Data, openIntent } from 'react-native-sibs-intent';
+import { Data, startActivityWithIntentMessage } from 'react-native-sibs-intent';
 
 const EVENT_NAME = 'onIntentResponse';
 
@@ -30,7 +30,7 @@ export default function App() {
   DeviceEventEmitter.addListener(EVENT_NAME, handleData);
 
   const sendIntent = async () => {
-    await openIntent(
+    await startActivityWithIntentMessage(
       'pt.sibs.android.mpos.sibsPagamentosQly',
       'pt.sibs.android.mpos.activities.MainActivity',
       value,

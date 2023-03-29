@@ -5,7 +5,6 @@ import android.content.Intent
 import android.os.Bundle
 import android.util.Base64
 import android.util.Log
-import android.widget.Toast
 import com.facebook.react.bridge.*
 import com.facebook.react.bridge.ActivityEventListener
 import com.facebook.react.bridge.Arguments
@@ -48,12 +47,19 @@ class SibsIntentModule(reactContext: ReactApplicationContext) :
   }
 
   /**
-   * The function is called when the activity is finished and returns a result
+   * Handles activity result for the SibsIntentModule native module.
    *
-   * @param activity The current activity
-   * @param requestCode This is the request code that you passed to the startActivityForResult() method.
-   * @param resultCode This is the result code returned by the activity.
-   * @param data Intent?
+   * This function processes the activity result received from an external
+   * activity and sends a JSON object containing the result information to
+   * the JavaScript side using the event emitter.
+   *
+   * @param activity The activity that initiated the result.
+   * @param requestCode The integer request code originally supplied to
+   *     startActivityForResult().
+   * @param resultCode The integer result code returned by the child activity
+   *     through its setResult().
+   * @param data An Intent, which can return result data to the caller
+   *     (various data can be attached as "extras").
    */
   override fun onActivityResult(
     activity: Activity?,
@@ -67,39 +73,30 @@ class SibsIntentModule(reactContext: ReactApplicationContext) :
     Log.d("DATA", data?.toString().toString())
 
     if (requestCode == REQUEST_CODE) {
-      var status = ""
-      var errorCode = ""
-      var date = ""
-      var reference = ""
-      var amount = ""
+
 
       if (resultCode == Activity.RESULT_OK && data != null) {
 
-        Log.d("error", "CALL_IN_ERROR")
-        Log.d("status", "CALL_IN_STATUS")
-        amount = data.getStringExtra(CALLIN_AMOUNT_KEY) ?: ""
-        date = data.getStringExtra(CALLIN_DATE_KEY) ?: ""
-        reference = data.getStringExtra(CALLIN_REF) ?: ""
-        status = data.getStringExtra(CALLIN_ERROR_KEY) ?: ""
-        errorCode = data.getStringExtra(CALLIN_STATUS_KEY) ?: ""
-
+        val amount = data.getStringExtra(CALLIN_AMOUNT_KEY) ?: ""
+        val date = data.getStringExtra(CALLIN_DATE_KEY) ?: ""
+        val reference = data.getStringExtra(CALLIN_REF) ?: ""
+        val status = data.getStringExtra(CALLIN_STATUS_KEY) ?: ""
+        val errorCode = data.getStringExtra(CALLIN_ERROR_KEY) ?: ""
 
         val jsonObject = Arguments.createMap()
 
         // Set key-value pairs in the JSON object
         jsonObject.putString("Status", status)
         jsonObject.putString("ErrorCode", errorCode)
+        jsonObject.putString("date", date)
+        jsonObject.putString("reference", reference)
+        jsonObject.putString("amount", amount)
+        Log.d("jsonObject", jsonObject.toString())
 
         // Use the event emitter to send the response to JavaScript
-        reactApplicationContext
-          .getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter::class.java)
+        reactApplicationContext.getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter::class.java)
           .emit(EVENT_NAME, jsonObject)
 
-        Toast.makeText(
-          reactApplicationContext,
-          "STATUS2: $status\nError: $errorCode\nAmount: $amount\nDate: $date\nReference: $reference",
-          Toast.LENGTH_LONG,
-        ).show()
         promise?.resolve(true)
       } else {
         promise?.resolve(false)
@@ -111,8 +108,23 @@ class SibsIntentModule(reactContext: ReactApplicationContext) :
 
   override fun onNewIntent(intent: Intent?) {}
 
+  /**
+   * Opens an external activity using an intent with an encoded message.
+   *
+   * This function launches an external activity from another application
+   * using an intent. It also passes a base64 encoded message to the external
+   * activity as an extra in the intent.
+   *
+   * @param packageId The package identifier of the external application to
+   *     launch.
+   * @param className The class name of the external activity to be launched.
+   * @param value The value to be included in the encoded message.
+   * @param reference The reference to be included in the encoded message.
+   * @param promise A Promise instance to handle the success or failure of
+   *     the operation.
+   */
   @ReactMethod
-  fun openIntent(
+  fun startActivityWithIntentMessage(
     packageId: String,
     className: String,
     value: String,
@@ -134,13 +146,13 @@ class SibsIntentModule(reactContext: ReactApplicationContext) :
       val bytes = message.toByteArray(Charsets.UTF_8)
       val base64msg = Base64.encodeToString(bytes, Base64.DEFAULT).trim()
 
-      Log.d("Debug", "Before condition: base64msg = $base64msg")
-      if (base64msg == "eyJhbW1vdW50IjoiIiwicmVmZXJlbmNlIjoiYXNkIn0=") {
-        Log.d("Debug", "Inside condition")
-        promise.resolve(false)
-        return
-      }
-      Log.d("Debug", "After condition")
+//      Log.d("Debug", "Before condition: base64msg = $base64msg")
+//      if (base64msg == "eyJhbW1vdW50IjoiIiwicmVmZXJlbmNlIjoiYXNkIn0=") {
+//        Log.d("Debug", "Inside condition")
+//        promise.resolve(false)
+//        return
+//      }
+//      Log.d("Debug", "After condition")
 
       val data = Bundle()
       data.putString(PACKAGE_ID, "com.sibsintentexample")

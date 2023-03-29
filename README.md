@@ -1,6 +1,12 @@
-# react-native-sibs-intent
+# React Native SIBS Intent (Alpha)
 
-send the intent of a payment
+`react-native-sibs-intent` is an alpha-stage React Native library that simplifies
+communication between your React Native application and the MPOS SIBS app on Android.
+This library provides a native module, `SibsIntentModule`, which handles the
+communication between your React Native JavaScript code and the Android native side
+when launching the MPOS SIBS app with custom parameters.
+
+## Please be aware that this module is currently in its alpha stage and will be provided as-is for the time being.
 
 ## Installation
 
@@ -10,12 +16,51 @@ npm install react-native-sibs-intent
 
 ## Usage
 
+First, import the `startActivityWithIntentMessage` function and `DeviceEventEmitter` from your library and `react-native`:
+
 ```js
-import { multiply } from 'react-native-sibs-intent';
+import { startActivityWithIntentMessage } from 'react-native-sibs-intent';
+
+import { DeviceEventEmitter } from 'react-native';
 
 // ...
 
-const result = await multiply(3, 7);
+async function openExternalActivity() {
+  const packageId = 'com.example.package';
+  const className = 'com.example.package.ExternalActivity';
+  const amount = '100.0';
+  const reference = 'transaction123';
+
+  try {
+    await startActivityWithIntentMessage(
+      packageId,
+      className,
+      amount,
+      reference
+    );
+    console.log('Activity launched');
+  } catch (error) {
+    console.log('Error launching activity:', error);
+  }
+}
+```
+
+To receive the activity result, add an event listener for the onActivityResult event using DeviceEventEmitter:
+
+```js
+function handleActivityResult(event) {
+  console.log('Received activity result:', event);
+}
+
+// Add the event listener when the component mounts
+componentDidMount() {
+  DeviceEventEmitter.addListener('your-event-name', handleActivityResult);
+}
+
+// Remove the event listener when the component unmounts
+componentWillUnmount() {
+  DeviceEventEmitter.removeListener('your-event-name', handleActivityResult);
+}
 ```
 
 ## Contributing
