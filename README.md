@@ -54,12 +54,12 @@ function handleActivityResult(event) {
 
 // Add the event listener when the component mounts
 componentDidMount() {
-  DeviceEventEmitter.addListener('your-event-name', handleActivityResult);
+  DeviceEventEmitter.addListener('onIntentResponse', handleActivityResult);
 }
 
 // Remove the event listener when the component unmounts
 componentWillUnmount() {
-  DeviceEventEmitter.removeListener('your-event-name', handleActivityResult);
+  DeviceEventEmitter.removeListener('onIntentResponse', handleActivityResult);
 }
 ```
 
