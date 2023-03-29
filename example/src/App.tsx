@@ -1,7 +1,6 @@
 import * as React from 'react';
 
 import {
-  DeviceEventEmitter,
   Keyboard,
   ScrollView,
   StyleSheet,
@@ -10,7 +9,11 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import { Data, startActivityWithIntentMessage } from 'react-native-sibs-intent';
+import {
+  Data,
+  intentEventEmitter,
+  startActivityWithIntentMessage,
+} from 'react-native-sibs-intent';
 
 const EVENT_NAME = 'onIntentResponse';
 
@@ -27,8 +30,6 @@ export default function App() {
     }
   };
 
-  DeviceEventEmitter.addListener(EVENT_NAME, handleData);
-
   const sendIntent = async () => {
     await startActivityWithIntentMessage(
       'pt.sibs.android.mpos.sibsPagamentosQly',
@@ -40,6 +41,14 @@ export default function App() {
     setValue('');
     setReference('');
   };
+
+  React.useEffect(() => {
+    intentEventEmitter.addListener(EVENT_NAME, handleData);
+
+    return () => {
+      intentEventEmitter.removeAllListeners(EVENT_NAME);
+    };
+  }, []);
 
   React.useEffect(() => {
     console.log(result);

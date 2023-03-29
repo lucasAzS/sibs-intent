@@ -176,4 +176,14 @@ class SibsIntentModule(reactContext: ReactApplicationContext) :
       promise.reject(e.message, "Package not found")
     }
   }
+
+  @ReactMethod
+  fun addListener(type: String?) {
+    // Keep: Required for RN built in Event Emitter Calls.
+  }
+
+  @ReactMethod
+  fun removeListeners(type: Int?) {
+    // Keep: Required for RN built in Event Emitter Calls.
+  }
 }

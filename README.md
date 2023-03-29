@@ -19,9 +19,10 @@ npm install react-native-sibs-intent
 First, import the `startActivityWithIntentMessage` function and `DeviceEventEmitter` from your library and `react-native`:
 
 ```js
-import { startActivityWithIntentMessage } from 'react-native-sibs-intent';
-
-import { DeviceEventEmitter } from 'react-native';
+import {
+  startActivityWithIntentMessage,
+  intentEventEmitter,
+} from 'react-native-sibs-intent';
 
 // ...
 
@@ -52,15 +53,18 @@ function handleActivityResult(event) {
   console.log('Received activity result:', event);
 }
 
-// Add the event listener when the component mounts
-componentDidMount() {
-  DeviceEventEmitter.addListener('onIntentResponse', handleActivityResult);
-}
 
-// Remove the event listener when the component unmounts
-componentWillUnmount() {
-  DeviceEventEmitter.removeListener('onIntentResponse', handleActivityResult);
-}
+// Add the event listener when the component mounts
+useEffect(() => {
+  intentEventEmitter.addListener('onIntentResponse', handleActivityResult);
+
+  // Remove the event listener when the component unmounts
+
+  return intentEventEmitter.removeAllListeners(EVENT_NAME);
+
+}), [])
+
+
 ```
 
 ## Contributing

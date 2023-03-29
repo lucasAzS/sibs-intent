@@ -1,4 +1,4 @@
-import { NativeModules, Platform } from 'react-native';
+import { NativeModules, Platform, NativeEventEmitter } from 'react-native';
 
 const LINKING_ERROR =
   `The package 'react-native-sibs-intent' doesn't seem to be linked. Make sure: \n\n` +
@@ -21,6 +21,8 @@ export interface Data {
   status: string;
   erroCode: string;
 }
+
+export const intentEventEmitter = new NativeEventEmitter(SibsIntent);
 
 /**
  * It opens the Sibs Intent with the given parameters
