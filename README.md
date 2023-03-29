@@ -16,7 +16,7 @@ npm install react-native-sibs-intent
 
 ## Usage
 
-First, import the `startActivityWithIntentMessage` function and `DeviceEventEmitter` from your library and `react-native`:
+First, import the `startActivityWithIntentMessage` function and `intentEventEmitter` from the library;
 
 ```js
 import {
@@ -46,7 +46,7 @@ async function openExternalActivity() {
 }
 ```
 
-To receive the activity result, add an event listener for the onActivityResult event using DeviceEventEmitter:
+To receive the activity result, add an event listener for the onActivityResult event using intentEventEmitter:
 
 ```js
 function handleActivityResult(event) {
