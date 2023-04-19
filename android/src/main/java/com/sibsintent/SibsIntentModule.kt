@@ -72,8 +72,11 @@ class SibsIntentModule(reactContext: ReactApplicationContext) :
     Log.d("RESULT_CODE", resultCode.toString())
     Log.d("DATA", data?.toString().toString())
 
-    if (requestCode == REQUEST_CODE) {
+    val jsonObject = Arguments.createMap()
+    jsonObject.putString("resultCode", resultCode.toString())
 
+
+    if (requestCode == REQUEST_CODE) {
 
       if (resultCode == Activity.RESULT_OK && data != null) {
 
@@ -83,11 +86,10 @@ class SibsIntentModule(reactContext: ReactApplicationContext) :
         val status = data.getStringExtra(CALLIN_STATUS_KEY) ?: ""
         val errorCode = data.getStringExtra(CALLIN_ERROR_KEY) ?: ""
 
-        val jsonObject = Arguments.createMap()
 
         // Set key-value pairs in the JSON object
-        jsonObject.putString("Status", status)
-        jsonObject.putString("ErrorCode", errorCode)
+        jsonObject.putString("status", status)
+        jsonObject.putString("errorCode", errorCode)
         jsonObject.putString("date", date)
         jsonObject.putString("reference", reference)
         jsonObject.putString("amount", amount)
