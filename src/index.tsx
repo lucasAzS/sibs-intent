@@ -30,7 +30,7 @@ export type IStatusTypes =
   | 'Success'
   | 'Declined'
   | 'CommError'
-  | 'UserCanceled'
+  | 'UserCancelled'
   | 'UserTimeout'
   | 'MissingCredentials';
 
