@@ -10,7 +10,7 @@ import {
   View,
 } from 'react-native';
 import {
-  Data,
+  IActivityData,
   intentEventEmitter,
   startActivityWithIntentMessage,
 } from 'react-native-sibs-intent';
@@ -20,9 +20,9 @@ const EVENT_NAME = 'onIntentResponse';
 export default function App() {
   const [value, setValue] = React.useState('1');
   const [reference, setReference] = React.useState('asd');
-  const [result, setResult] = React.useState<Data>();
+  const [result, setResult] = React.useState<IActivityData>();
 
-  const handleData = async (data: Data) => {
+  const handleData = async (data: IActivityData) => {
     try {
       setResult(data);
     } catch (error) {

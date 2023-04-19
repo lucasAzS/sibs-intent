@@ -17,10 +17,22 @@ const SibsIntent = NativeModules.SibsIntent
       }
     );
 
-export interface Data {
-  status: string;
-  erroCode: string;
+export interface IActivityData {
+  errorCode: string;
+  status: IStatusTypes;
+  date: string;
+  reference: string;
+  amount: string;
 }
+
+export type IStatusTypes =
+  | 'DeviceError'
+  | 'Success'
+  | 'Declined'
+  | 'CommError'
+  | 'UserCanceled'
+  | 'UserTimeout'
+  | 'MissingCredentials';
 
 export const intentEventEmitter = new NativeEventEmitter(SibsIntent);
 
