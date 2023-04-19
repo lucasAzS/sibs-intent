@@ -73,8 +73,6 @@ class SibsIntentModule(reactContext: ReactApplicationContext) :
     Log.d("DATA", data?.toString().toString())
 
     val jsonObject = Arguments.createMap()
-    jsonObject.putString("resultCode", resultCode.toString())
-
 
     if (requestCode == REQUEST_CODE) {
 
@@ -86,8 +84,7 @@ class SibsIntentModule(reactContext: ReactApplicationContext) :
         val status = data.getStringExtra(CALLIN_STATUS_KEY) ?: ""
         val errorCode = data.getStringExtra(CALLIN_ERROR_KEY) ?: ""
 
-
-        // Set key-value pairs in the JSON object
+        jsonObject.putString("resultCode", resultCode.toString())
         jsonObject.putString("status", status)
         jsonObject.putString("errorCode", errorCode)
         jsonObject.putString("date", date)
@@ -95,14 +92,15 @@ class SibsIntentModule(reactContext: ReactApplicationContext) :
         jsonObject.putString("amount", amount)
         Log.d("jsonObject", jsonObject.toString())
 
-        // Use the event emitter to send the response to JavaScript
-        reactApplicationContext.getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter::class.java)
-          .emit(EVENT_NAME, jsonObject)
-
         promise?.resolve(true)
       } else {
+        jsonObject.putString("error", "Data is null or result is not OK.")
+        Log.d("jsonObject", jsonObject.toString())
         promise?.resolve(false)
       }
+
+      reactApplicationContext.getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter::class.java)
+        .emit(EVENT_NAME, jsonObject)
     }
   }
 

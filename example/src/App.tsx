@@ -75,6 +75,10 @@ export default function App() {
       <TouchableOpacity style={styles.btn} onPress={sendIntent}>
         <Text style={styles.btnText}>Press Here</Text>
       </TouchableOpacity>
+
+      <Text style={{ marginTop: 20 }}>
+        {result ? JSON.stringify(result, null, 2) : 'No data'}
+      </Text>
     </ScrollView>
   );
 }
